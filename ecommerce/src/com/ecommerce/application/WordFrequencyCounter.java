@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,7 +60,7 @@ public class WordFrequencyCounter {
 		}
 	}
 	
-	public Map<String, Integer> extract() 
+	public Map<String, Long> extract() 
 	{
 		try {
 
@@ -104,12 +106,12 @@ public class WordFrequencyCounter {
 	
 	/**
 	 * With FlatMaps !!
+	 * 
 	 * @return
 	 */
-	public Map<String, Integer> extract2() {
-		
-		try {
+	public Map<String, Long> extract2() {
 
+		try {
 			Stream<String> lines = Files.lines(new File(filePath).toPath()).map(s -> s.trim())
 					.filter(s -> !s.isEmpty());
 
@@ -119,10 +121,14 @@ public class WordFrequencyCounter {
 			});
 
 			Stream<String> words = wordsArr.flatMap(strArr -> Arrays.stream(strArr));
-
-			Map<String, Long> result = words.collect(Collectors.groupingBy((c) -> c, Collectors.counting()));
+			//Map<String, Long> result = words.collect(Collectors.groupingBy((c) -> c, Collectors.counting()));
+			//result.forEach((k, v) -> System.out.println(k + ":" + v));
+			
+			 // sort by key
+			Map<String, Long> result = words.collect(Collectors.groupingBy((c) -> c, TreeMap::new, Collectors.counting()));
 			result.forEach((k, v) -> System.out.println(k + ":" + v));
-
+			
+			return result;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -130,9 +136,9 @@ public class WordFrequencyCounter {
 	}
 
 	public static void main(String[] args) {
-		String filePath = "./resources/sampleeg.txt";
+		String filePath = "./resources/sampleACAD.txt";
 		WordFrequencyCounter counter = new WordFrequencyCounter(filePath);
-		counter.printFile();
+		//counter.printFile();
 		counter.extract2();
 	}
 }
