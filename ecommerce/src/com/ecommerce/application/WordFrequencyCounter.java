@@ -3,9 +3,11 @@ package com.ecommerce.application;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class WordFrequencyCounter {
@@ -99,11 +101,38 @@ public class WordFrequencyCounter {
 
 		return null;
 	}
+	
+	/**
+	 * With FlatMaps !!
+	 * @return
+	 */
+	public Map<String, Integer> extract2() {
+		
+		try {
+
+			Stream<String> lines = Files.lines(new File(filePath).toPath()).map(s -> s.trim())
+					.filter(s -> !s.isEmpty());
+
+			Stream<String[]> wordsArr = lines.map((l) -> {
+				String[] tokens = l.trim().toLowerCase().split(" ");
+				return tokens;
+			});
+
+			Stream<String> words = wordsArr.flatMap(strArr -> Arrays.stream(strArr));
+
+			Map<String, Long> result = words.collect(Collectors.groupingBy((c) -> c, Collectors.counting()));
+			result.forEach((k, v) -> System.out.println(k + ":" + v));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	public static void main(String[] args) {
-		String filePath = "./resources/sampleACAD.txt";
+		String filePath = "./resources/sampleeg.txt";
 		WordFrequencyCounter counter = new WordFrequencyCounter(filePath);
-		// counter.printFile();
-		counter.extract();
+		counter.printFile();
+		counter.extract2();
 	}
 }
