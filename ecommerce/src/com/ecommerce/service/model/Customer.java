@@ -1,6 +1,6 @@
 package com.ecommerce.service.model;
 
-public class Customer {
+public class Customer implements Comparable<Customer>{
 
 	private Integer id;
 	private String name;
@@ -34,5 +34,15 @@ public class Customer {
 
 	public void setStatus(AccessStatus status) {
 		this.status = status;
+	}
+
+	@Override
+	public int compareTo(Customer otherCustomer) {
+		return Integer.compare(this.id, otherCustomer.id);
+	}
+
+	@Override
+	public String toString() {
+		return "Customer [id=" + id + ", name=" + name + ", status=" + status + "]";
 	}
 }
