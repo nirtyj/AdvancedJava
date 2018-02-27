@@ -3,7 +3,10 @@ package com.ecommerce.application;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -52,6 +55,58 @@ public class ECommerceApplication {
 		Predicate<Customer> greaterthan4 = c -> c.getName().length() >= 4;
 		listOfPredicate.add(greaterthan4);
 		print(filterAnd(customers, listOfPredicate));
+		
+		System.out.println("Extract just names with custom generic implementation");
+		NameExtractor nameExtractor = new NameExtractor();
+		List<String> names = getPropertyList(customers, nameExtractor);
+		names.forEach(n -> System.out.println(n));
+		
+		System.out.println("Extract Id's with Function Interface");
+		List<Integer> ids = getPropertyListWithFunction(customers, (s) -> s.getId());
+		ids.forEach(n -> System.out.println(n));
+		
+		System.out.println("Filter with Streams - starts with P");
+		List<Customer> namewithP = customers.stream().filter((c) -> c.getName().startsWith("P")).collect(Collectors.toList());
+		print(namewithP);
+		
+		System.out.println("Filter with Streams - starts with A and More than 3 chars");
+		List<Customer> namewithA = customers.stream().
+						filter((c) -> c.getName().startsWith("A")).
+						filter((c) -> c.getName().length()>4).
+						collect(Collectors.toList());
+		print(namewithA);
+		
+		System.out.println("Filter with Streams, Maps and peeks - starts with A and More than 3 chars only names - Apple");
+		boolean debug = true;	
+		List<String> nameStringwithA = customers.stream().parallel().
+				peek(c-> 
+					{ 
+						if(debug)
+							System.out.println(" Peek 1 : " + c);
+					}).
+				filter((c) -> c.getName().startsWith("A")).
+				peek(c-> 
+				{ 
+					if(debug)
+						System.out.println(" Peek 2 : " + c);
+				}).
+				filter((c) -> c.getName().length()>4).
+				peek(c-> 
+				{ 
+					if(debug)
+						System.out.println(" Peek 3 : " + c);
+				}).
+				map((c) -> c.getName()).
+				peek(c-> 
+				{ 
+					if(debug)
+						System.out.println(" Peek 4 : " + c);
+				}).
+				collect(Collectors.toList());
+		nameStringwithA.forEach(n -> System.out.println(n));
+
+		// streams once collected / terminal statements such as for-each cannot be re-used nor cloned
+		
 	}
 
 	private static List<Customer> filter(List<Customer> customers, Predicate<Customer> filter) {
@@ -89,4 +144,36 @@ public class ECommerceApplication {
 		customers.forEach(c -> System.out.println(c.toString()));
 	}
 
+	public static <T, R> List<R> getPropertyList(List<T> input, Extract<T, R> extractor)
+	{
+		List<R> result = new ArrayList<>();
+		for(T s : input)
+		{
+			result.add(extractor.getProperty(s));
+		}
+		return result;
+	}
+	
+	public static <T, R> List<R> getPropertyListWithFunction(List<T> input, Function<T, R> extractor)
+	{
+		List<R> result = new ArrayList<>();
+		for(T s : input)
+		{
+			result.add(extractor.apply(s));
+		}
+		return result;
+	}
+	
+	public interface Extract<T, R>
+	{
+		public R getProperty(T s);
+	}
+	
+	public static class NameExtractor implements Extract<Customer, String>
+	{
+		@Override
+		public String getProperty(Customer s) {
+			return s.getName();
+		}
+	}
 }
