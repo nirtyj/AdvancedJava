@@ -3,10 +3,12 @@ package com.ecommerce.application;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -104,8 +106,42 @@ public class ECommerceApplication {
 				}).
 				collect(Collectors.toList());
 		nameStringwithA.forEach(n -> System.out.println(n));
-
+		
 		// streams once collected / terminal statements such as for-each cannot be re-used nor cloned
+
+		System.out.println("Filter with Streams - Custom written collectors- starts with A and More than 3 chars");
+		
+		Supplier<List<Customer>> supplier = () -> new ArrayList<>();
+		BiConsumer<List<Customer>, Customer> accumulator = (list, currStudent) -> list.add(currStudent);
+		BiConsumer<List<Customer>, List<Customer>> combiner = (list1, list2) -> list1.addAll(list2);
+
+		namewithA = customers.stream().
+						filter((c) -> c.getName().startsWith("A")).
+						filter((c) -> c.getName().length()>4).
+						collect(supplier, accumulator, combiner);
+		
+		myPrettyprint(namewithA);
+		
+		// Another way --> Note the ::
+		System.out.println("Filter with Streams - Shortly written Collectors - starts with A and More than 3 chars");
+		
+		namewithA = customers.stream().
+				filter((c) -> c.getName().startsWith("A")).
+				filter((c) -> c.getName().length()>4).
+				collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+		myPrettyprint(namewithA);
+		
+
+		System.out.println("Filter with Streams - Pre provided collecters - grouping by start characters ");
+		Map<Character, Long> count = customers.stream().
+				collect(Collectors.groupingBy((c) -> c.getName().charAt(0) , Collectors.counting()));
+		count.forEach( (k, v) -> System.out.println(k + ":" + v));
+	
+
+		System.out.println("Filter with Streams - Pre provided collecters - to Map collector with Identity (returns input argument");
+		Map<Integer, Customer> count1 = customers.stream().
+				collect(Collectors.toMap(Customer::getId, Function.identity()));
+		count1.forEach( (k, v) -> System.out.println(k + ":" + v));
 		
 	}
 
@@ -142,6 +178,16 @@ public class ECommerceApplication {
 
 	private static void print(List<Customer> customers) {
 		customers.forEach(c -> System.out.println(c.toString()));
+	}
+	
+	private static void myPrettyprint(List<Customer> customers) {
+		// Note the use of :: - use of consumer interface
+		customers.forEach(ECommerceApplication::myPrettyPrint);
+	}
+	
+	private static void myPrettyPrint(Customer c)
+	{
+		System.out.println(" { " + c.toString() + " } ");
 	}
 
 	public static <T, R> List<R> getPropertyList(List<T> input, Extract<T, R> extractor)
