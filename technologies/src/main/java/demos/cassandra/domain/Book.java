@@ -1,4 +1,4 @@
-package demos.domain;
+package demos.cassandra.domain;
 
 import java.util.UUID;
 

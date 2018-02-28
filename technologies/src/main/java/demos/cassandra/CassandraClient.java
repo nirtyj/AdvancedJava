@@ -1,8 +1,8 @@
 package demos.cassandra;
 
-import demos.domain.Book;
-import demos.repository.BookRepository;
-import demos.repository.KeyspaceRepository;
+import demos.cassandra.domain.Book;
+import demos.cassandra.repository.BookRepository;
+import demos.cassandra.repository.KeyspaceRepository;
 
 import java.util.logging.Logger;
 

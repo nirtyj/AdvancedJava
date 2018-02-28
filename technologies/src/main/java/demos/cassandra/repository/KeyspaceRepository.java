@@ -1,4 +1,4 @@
-package demos.repository;
+package demos.cassandra.repository;
 
 import com.datastax.driver.core.Session;
 

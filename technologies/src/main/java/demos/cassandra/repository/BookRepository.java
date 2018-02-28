@@ -1,4 +1,4 @@
-package demos.repository;
+package demos.cassandra.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 
-import demos.domain.Book;
+import demos.cassandra.domain.Book;
 
 public class BookRepository {
 
