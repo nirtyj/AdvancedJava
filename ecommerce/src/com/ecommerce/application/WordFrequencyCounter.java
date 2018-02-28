@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
@@ -70,7 +72,7 @@ public class WordFrequencyCounter {
 
 			Stream<HashMap<String, Integer>> wordsCount = lines.map((l) -> {
 				HashMap<String, Integer> map = new HashMap<String, Integer>();
-				String[] tokens = l.toLowerCase().split(" ");
+				String[] tokens = l.toLowerCase().split("\\W");
 				for (String token : tokens) {
 					Integer count = map.getOrDefault(token, 0);
 					map.put(token, count + 1);
@@ -96,6 +98,7 @@ public class WordFrequencyCounter {
 			HashMap<String, Integer> result = wordsCount.collect(HashMap::new, accumulator, combiner);
 			result.forEach((k, v) -> System.out.println(k + ":" + v));
 
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -116,7 +119,7 @@ public class WordFrequencyCounter {
 					.filter(s -> !s.isEmpty());
 
 			Stream<String[]> wordsArr = lines.map((l) -> {
-				String[] tokens = l.trim().toLowerCase().split(" ");
+				String[] tokens = l.trim().toLowerCase().split("\\W");
 				return tokens;
 			});
 
@@ -125,9 +128,22 @@ public class WordFrequencyCounter {
 			//result.forEach((k, v) -> System.out.println(k + ":" + v));
 			
 			 // sort by key
-			Map<String, Long> result = words.collect(Collectors.groupingBy((c) -> c, TreeMap::new, Collectors.counting()));
-			result.forEach((k, v) -> System.out.println(k + ":" + v));
+			TreeMap<String, Long> result = words.collect(Collectors.groupingBy((c) -> c, TreeMap::new, Collectors.counting()));
 			
+			// calculate frequency
+			TreeMap<Long, Set<String>> frequency = new TreeMap<>(Collections.reverseOrder());		
+			for(Map.Entry<String, Long> entry : result.entrySet())
+			{
+				if(!frequency.containsKey(entry.getValue()))
+				{
+					HashSet<String> vals = new HashSet<>();
+					frequency.put(entry.getValue(), vals);
+				}
+				frequency.get(entry.getValue()).add(entry.getKey());
+			}
+			
+			// limit by some top numbers
+			frequency.entrySet().stream().limit(400).forEach((e) -> System.out.println(e.getKey() + "\t\t:" + e.getValue()));
 			return result;
 		} catch (IOException e) {
 			e.printStackTrace();
