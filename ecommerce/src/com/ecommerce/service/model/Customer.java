@@ -1,9 +1,14 @@
 package com.ecommerce.service.model;
 
+import com.annotation.NirtyAnnotation;
+
 public class Customer implements Comparable<Customer>{
 
 	private Integer id;
+	
+	@NirtyAnnotation
 	private String name;
+	
 	private AccessStatus status;
 
 	public Customer(Integer id, String name, AccessStatus status) {
