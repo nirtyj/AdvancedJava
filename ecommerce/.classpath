@@ -5,8 +5,9 @@
 	<classpathentry kind="src" path="jars"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="/Users/njaganathan/nirtyjgit/AdvancedJava/ecommerce/jars/commons-lang3-3.7.jar"/>
 	<classpathentry kind="lib" path="jars/plantuml.1.2018.1.jar"/>
 	<classpathentry kind="lib" path="jars/commons-io-2.6.jar"/>
+	<classpathentry kind="lib" path="jars/commons-lang3-3.7.jar"/>
+	<classpathentry kind="lib" path="jars/javafx-ui-swing.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
