@@ -12,6 +12,10 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.io.fs.FileUtils;
 
+/**
+ * https://neo4j.com/docs/java-reference/current/tutorials-java-embedded/
+ *
+ */
 public class EmbeddedNeo4j
 {
     private static final File databaseDirectory = new File( "target/neo4j-hello-db" );

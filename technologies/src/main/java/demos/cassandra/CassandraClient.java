@@ -14,6 +14,11 @@ import com.datastax.driver.core.utils.UUIDs;
 public class CassandraClient {
     private static final Logger LOG = Logger.getLogger(CassandraClient.class.toString());
 
+    /**
+     * Install Cassandra following this
+     * https://www.datastax.com/2012/01/working-with-apache-cassandra-on-mac-os-x
+     * @param args
+     */
     public static void main(String args[]) {
     		BasicConfigurator.configure();
         CassandraConnector connector = new CassandraConnector();
